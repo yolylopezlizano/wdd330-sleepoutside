@@ -7,21 +7,24 @@ function renderCartContents() {
 }
 
 function cartItemTemplate(item) {
-  // Adjust the image path depending on the file location
+  // Normalize the image path
   let imagePath = item.Image;
 
-  // If the image path is not an absolute URL and not already correct
-  if (!imagePath.startsWith("http")) {
-    // Fix relative paths to work correctly from /cart/ folder
-    imagePath = imagePath.replace(/^(\.\.\/)+/, "../");
+  // If imagePath starts with "../", remove the first two dots so it points correctly
+  if (imagePath.startsWith("../")) {
+    imagePath = imagePath.replace("../", "");
   }
 
-  // HTML template for each item in the cart
+  // Make sure the final path points to the right location
+  imagePath = "/" + imagePath;
+
+  // If the image still doesn't load, show a fallback image
   const newItem = `<li class="cart-card divider">
     <a href="#" class="cart-card__image">
       <img
         src="${imagePath}"
         alt="${item.Name}"
+        onerror="this.src='../images/no-image.jpg'"
       />
     </a>
     <a href="#">
@@ -34,6 +37,3 @@ function cartItemTemplate(item) {
 
   return newItem;
 }
-
-// Render the cart when the page loads
-renderCartContents();
