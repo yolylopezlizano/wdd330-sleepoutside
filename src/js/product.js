@@ -5,7 +5,7 @@ const dataSource = new ProductData("tents");
 
 function addProductToCart(product) {
   // Obtener el contenido actual del carrito o crear un array vacío
-  let cart = getLocalStorage("so-cart");
+  let cart = getLocalStorage("so-cart") || [];
 
   // Si lo que hay guardado no es un array, lo convertimos
   if (!Array.isArray(cart)) {
