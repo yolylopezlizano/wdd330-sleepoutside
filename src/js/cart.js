@@ -2,7 +2,22 @@ import { getLocalStorage } from "./utils.mjs";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
-  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
+
+  if (!Array.isArray(cartItems) || cartItems.length === 0) {
+    document.querySelector(".product-list").innerHTML =
+      "<p>Your cart is empty.</p>";
+    return;
+  }
+
+  const validItems = cartItems.filter((item) => item && item.Image);
+
+  if (validItems.length === 0) {
+    document.querySelector(".product-list").innerHTML =
+      "<p>Your cart is empty.</p>";
+    return;
+  }
+
+  const htmlItems = validItems.map((item) => cartItemTemplate(item));
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 }
 
