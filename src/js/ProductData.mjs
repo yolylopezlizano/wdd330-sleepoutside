@@ -11,12 +11,11 @@ export default class ProductData {
     this.category = category;
     let basePath;
 
+    // ✅ Detección automática del entorno
     if (window.location.hostname.includes("github.io")) {
-      // GitHub Pages
-      basePath = "/wdd330-sleepoutside/json/";
+      basePath = "/wdd330-sleepoutside/src/json/";
     } else if (window.location.hostname.includes("netlify.app")) {
-      // Netlify
-      basePath = "/json/";
+      basePath = "/src/json/";
     } else {
       basePath = "../json/";
     }
@@ -36,4 +35,5 @@ export default class ProductData {
     return products.find((item) => item.Id === id);
   }
 }
+
 
