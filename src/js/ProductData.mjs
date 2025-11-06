@@ -11,15 +11,15 @@ export default class ProductData {
     this.category = category;
     let basePath;
 
-    if (window.location.hostname.includes("github.io")) {
-      basePath = "/wdd330-sleepoutside/src/json/";
-    } else if (window.location.hostname.includes("netlify.app")) {
-      basePath = "/json/";
-    } else {
-      basePath = "../json/";
-    }
+  if (window.location.hostname.includes("github.io")) {
+    basePath = "/wdd330-sleepoutside/src/json/";
+  } else if (window.location.hostname.includes("netlify.app")) {
+    basePath = "/src/json/";
+  } else {
+    basePath = "../json/";
+  }
 
-    this.path = `${basePath}${this.category}.json`;
+  this.path = `${basePath}${this.category}.json`;
   }
 
   getData() {
