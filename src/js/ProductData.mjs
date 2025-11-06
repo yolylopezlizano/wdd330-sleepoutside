@@ -9,7 +9,17 @@ function convertToJson(res) {
 export default class ProductData {
   constructor(category) {
     this.category = category;
-    this.path = `/json/${this.category}.json`;
+    let basePath;
+
+    if (window.location.hostname.includes("github.io")) {
+    basePath = "/wdd330-sleepoutside/src/json/";
+    } else if (window.location.hostname.includes("netlify.app")) {
+    basePath = "/json/";
+    } else {
+    basePath = "../json/";
+}
+
+this.path = `${basePath}${this.category}.json`;
   }
   getData() {
     return fetch(this.path)
