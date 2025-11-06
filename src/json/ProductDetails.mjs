@@ -4,13 +4,11 @@
 import ProductData from "./ProductData.mjs";
 import { setLocalStorage, getLocalStorage } from "./utils.mjs";
 
-// ✅ 1. Get product ID from URL parameters (?product=ID)
 function getProductId() {
   const params = new URLSearchParams(window.location.search);
   return params.get("product");
 }
 
-// ✅ 2. Render the selected product details on the page
 function renderProductDetails(product) {
   const productSection = document.querySelector(".product-detail");
 
@@ -27,14 +25,23 @@ function renderProductDetails(product) {
   `;
 }
 
-// ✅ 3. Add selected product to the shopping cart (localStorage)
 function addProductToCart(product) {
   let cartItems = getLocalStorage("so-cart") || [];
-  cartItems.push(product);
+
+  const existingIndex = cartItems.findIndex((item) => item.Id === product.Id);
+
+  if (existingIndex > -1) {
+    cartItems[existingIndex].quantity =
+      (cartItems[existingIndex].quantity || 1) + 1;
+  } else {
+    // If new, add quantity = 1
+    product.quantity = 1;
+    cartItems.push(product);
+  }
+
   setLocalStorage("so-cart", cartItems);
 }
 
-// ✅ 4. Handle click on "Add to Cart" button
 function addToCartHandler(product) {
   const button = document.getElementById("addToCart");
   if (button) {
@@ -45,15 +52,14 @@ function addToCartHandler(product) {
   }
 }
 
-// ✅ 5. Main function — runs when the page loads
 async function init() {
   const productId = getProductId();
   const dataSource = new ProductData("tents");
 
   try {
     const product = await dataSource.findProductById(productId);
-    console.log("ID encontrado en URL:", productId);
-    console.log("Producto encontrado:", product);
+    console.log("ID found in URL:", productId);
+    console.log("Product found:", product);
 
     if (product) {
       renderProductDetails(product);
@@ -70,4 +76,3 @@ async function init() {
 }
 
 init();
-
