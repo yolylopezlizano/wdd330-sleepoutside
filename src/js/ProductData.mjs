@@ -1,4 +1,3 @@
-// ProductData.mjs
 function convertToJson(res) {
   if (res.ok) {
     return res.json();
@@ -13,15 +12,16 @@ export default class ProductData {
     let basePath;
 
     if (window.location.hostname.includes("github.io")) {
-      basePath = "/wdd330-sleepoutside/src/json/";
+      // GitHub Pages
+      basePath = "/wdd330-sleepoutside/json/";
     } else if (window.location.hostname.includes("netlify.app")) {
-      basePath = "/src/json/";
+      // Netlify
+      basePath = "/json/";
     } else {
       basePath = "../json/";
     }
 
     this.path = `${basePath}${this.category}.json`;
-
     console.log("📦 ProductData cargando desde:", this.path);
   }
 
@@ -36,3 +36,4 @@ export default class ProductData {
     return products.find((item) => item.Id === id);
   }
 }
+
