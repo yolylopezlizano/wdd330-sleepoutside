@@ -12,20 +12,22 @@ export default class ProductData {
     let basePath;
 
     if (window.location.hostname.includes("github.io")) {
-    basePath = "/wdd330-sleepoutside/src/json/";
+      basePath = "/wdd330-sleepoutside/src/json/";
     } else if (window.location.hostname.includes("netlify.app")) {
-    basePath = "/json/";
+      basePath = "/json/";
     } else {
-    basePath = "../json/";
-}
+      basePath = "../json/";
+    }
 
-this.path = `${basePath}${this.category}.json`;
+    this.path = `${basePath}${this.category}.json`;
   }
+
   getData() {
     return fetch(this.path)
       .then(convertToJson)
       .then((data) => data);
   }
+
   async findProductById(id) {
     const products = await this.getData();
     return products.find((item) => item.Id === id);
