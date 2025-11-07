@@ -9,19 +9,24 @@ function convertToJson(res) {
 export default class ProductData {
   constructor(category) {
     this.category = category;
-    let basePath;
 
-    // ✅ Detección automática del entorno
-    if (window.location.hostname.includes("github.io")) {
+    // Detecta el entorno y ajusta la ruta
+    let basePath;
+    const host = window.location.hostname;
+
+    if (host.includes("github.io")) {
+      // para GitHub Pages
       basePath = "/wdd330-sleepoutside/src/json/";
-    } else if (window.location.hostname.includes("netlify.app")) {
+    } else if (host.includes("netlify.app")) {
+      // para Netlify
       basePath = "/src/json/";
     } else {
+      // para entorno local (vite)
       basePath = "../json/";
     }
 
     this.path = `${basePath}${this.category}.json`;
-    console.log("📦 ProductData cargando desde:", this.path);
+    console.log("📦 ProductData loading from:", this.path);
   }
 
   getData() {
@@ -35,5 +40,6 @@ export default class ProductData {
     return products.find((item) => item.Id === id);
   }
 }
+
 
 
