@@ -25,9 +25,17 @@ async function renderProductList() {
   );
 
   const html = validProducts
-    .map((product) => {
-      const imageSrc = product.Image ? product.Image.replace("../", "/") : "/images/no-image.png";
-      return `
+  .map((product) => {
+    let imageSrc = product.Image
+      ? product.Image.replace("../images", "/images")
+      : "/images/no-image.png";
+
+    // 👇 Adjust path for Netlify deployment
+    if (window.location.hostname.includes("netlify.app")) {
+      imageSrc = imageSrc.replace("/images", "/src/images");
+    }
+
+    return `
       <li class="product-card">
         <a href="/product_pages/index.html?product=${product.Id}">
           <img src="${imageSrc}" alt="${product.Name}" onerror="this.parentElement.parentElement.remove();" />
@@ -36,8 +44,8 @@ async function renderProductList() {
           <p>$${product.FinalPrice}</p>
         </a>
       </li>`;
-    })
-    .join("");
+  })
+  .join("");
 
   listElement.innerHTML = html;
 }
