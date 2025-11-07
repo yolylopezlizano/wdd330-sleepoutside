@@ -26,7 +26,6 @@ function renderCheckout() {
     )
     .join("");
 
-  
   main.innerHTML += `
     <ul>${list}</ul>
     <div class="cart-total">

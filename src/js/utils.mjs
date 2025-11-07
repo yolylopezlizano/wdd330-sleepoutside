@@ -24,7 +24,6 @@ export function getParam(param) {
   return urlParams.get(param); 
 }
 
-// 🧩 Función para renderizar listas con una plantilla
 export function renderListWithTemplate(
   templateFn,
   parentElement,
@@ -32,12 +31,10 @@ export function renderListWithTemplate(
   position = "afterbegin",
   clear = false
 ) {
-  // Si se pide limpiar el contenedor antes de renderizar
   if (clear) {
     parentElement.innerHTML = "";
   }
 
-  // Crear HTML con el template literal
   const htmlStrings = list.map(templateFn);
   parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
 }
