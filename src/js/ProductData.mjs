@@ -9,19 +9,15 @@ function convertToJson(res) {
 export default class ProductData {
   constructor(category) {
     this.category = category;
-
-    // Detect environment and set correct base path
     let basePath;
 
+    // 🌍 Detect environment
     if (window.location.hostname.includes("github.io")) {
-      // For GitHub Pages
-      basePath = "/wdd330-sleepoutside/src/json/";
+      basePath = "/wdd330-sleepoutside/json/";
     } else if (window.location.hostname.includes("netlify.app")) {
-      // ✅ For Netlify builds
       basePath = "/json/";
     } else {
-      // Local development
-      basePath = "../json/";
+      basePath = "../json/"; // local dev
     }
 
     this.path = `${basePath}${this.category}.json`;
@@ -39,7 +35,6 @@ export default class ProductData {
     return products.find((item) => item.Id === id);
   }
 }
-
 
 
 
