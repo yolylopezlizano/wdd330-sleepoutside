@@ -11,13 +11,16 @@ export default class ProductData {
     this.category = category;
     let basePath;
 
-    // 🌍 Detect environment
+    // 🌍 rutas por entorno
     if (window.location.hostname.includes("github.io")) {
+      // GitHub Pages (repositorio <user>.github.io/wdd330-sleepoutside)
       basePath = "/wdd330-sleepoutside/json/";
     } else if (window.location.hostname.includes("netlify.app")) {
+      // Netlify: el plugin copió json a /json
       basePath = "/json/";
     } else {
-      basePath = "../json/"; // local dev
+      // local dev (vite: /src es raíz de dev server, pero fetch relativo funciona con ../json/)
+      basePath = "../json/";
     }
 
     this.path = `${basePath}${this.category}.json`;
@@ -25,9 +28,7 @@ export default class ProductData {
   }
 
   getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
+    return fetch(this.path).then(convertToJson).then((data) => data);
   }
 
   async findProductById(id) {
@@ -35,6 +36,7 @@ export default class ProductData {
     return products.find((item) => item.Id === id);
   }
 }
+
 
 
 
