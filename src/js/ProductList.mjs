@@ -1,19 +1,48 @@
-import ProductData from "./ProductData.mjs";
+// ✅ Importar la función utilitaria al inicio
+import { renderListWithTemplate } from "./utils.mjs";
 
+// 🧩 Template function (fuera de la clase)
+function productCardTemplate(product) {
+  // Usar imagen genérica si la original no es válida
+  const imageSrc =
+    product.Image &&
+    typeof product.Image === "string" &&
+    product.Image.trim() !== "" &&
+    !product.Image.toLowerCase().includes("undefined") &&
+    !product.Image.toLowerCase().includes("missing")
+      ? product.Image.replace("../", "/")
+      : "/images/no-image.png";
+
+  return `
+    <li class="product-card">
+      <a href="/product_pages/index.html?product=${product.Id}">
+        <img 
+          src="${imageSrc}" 
+          alt="${product.Name}" 
+          onerror="this.src='/images/no-image.png'; this.onerror=null;" 
+        />
+        <h2 class="card__brand">${product.Brand.Name}</h2>
+        <h3 class="card__name">${product.NameWithoutBrand}</h3>
+        <p class="product-card__price">$${product.FinalPrice}</p>
+      </a>
+    </li>
+  `;
+}
+
+// 🏗️ Clase ProductList
 export default class ProductList {
-  constructor(category, listElementSelector) {
+  constructor(category, dataSource, listElement) {
     this.category = category;
-    this.dataSource = new ProductData(this.category);
-    this.listElement = document.querySelector(listElementSelector);
+    this.dataSource = dataSource;
+    this.listElement = listElement;
   }
 
   async init() {
     try {
       const products = await this.dataSource.getData();
-
       this.renderList(products);
     } catch (err) {
-      console.error("Error loading product list:", err);
+      console.error("❌ Error loading product list:", err);
       this.listElement.innerHTML = "<p>Failed to load products.</p>";
     }
   }
@@ -24,23 +53,19 @@ export default class ProductList {
       return;
     }
 
-    const html = products
-      .map((product) => this.productCardTemplate(product))
-      .join("");
+    // 🔍 Filtrar productos válidos
+    const validProducts = products.filter(
+      (p) =>
+        p.Image &&
+        typeof p.Image === "string" &&
+        p.Image.trim() !== "" &&
+        !p.Image.toLowerCase().includes("undefined") &&
+        !p.Image.toLowerCase().includes("missing")
+    );
 
-    this.listElement.innerHTML = html;
-  }
-
-  productCardTemplate(product) {
-    return `
-      <li class="product-card">
-        <a href="product_pages/index.html?product=${product.Id}">
-          <img src="${product.Image}" alt="${product.Name}" />
-          <h2 class="card__name">${product.NameWithoutBrand}</h2>
-          <p class="card__brand">${product.Brand.Name}</p>
-          <p class="card__price">$${product.FinalPrice}</p>
-        </a>
-      </li>
-    `;
+    // ✅ Usar la función de utils.mjs
+    renderListWithTemplate(productCardTemplate, this.listElement, validProducts);
   }
 }
+
+
