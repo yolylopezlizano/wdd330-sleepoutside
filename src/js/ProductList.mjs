@@ -1,9 +1,6 @@
-// ✅ Importar la función utilitaria al inicio
 import { renderListWithTemplate } from "./utils.mjs";
 
-// 🧩 Template function (fuera de la clase)
 function productCardTemplate(product) {
-  // Usar imagen genérica si la original no es válida
   const imageSrc =
     product.Image &&
     typeof product.Image === "string" &&
@@ -11,7 +8,7 @@ function productCardTemplate(product) {
     !product.Image.toLowerCase().includes("undefined") &&
     !product.Image.toLowerCase().includes("missing")
       ? product.Image.replace("../", "/")
-      : "/images/no-image.png";
+      : "../images/no-image.png";
 
   return `
     <li class="product-card">
@@ -29,7 +26,6 @@ function productCardTemplate(product) {
   `;
 }
 
-// 🏗️ Clase ProductList
 export default class ProductList {
   constructor(category, dataSource, listElement) {
     this.category = category;
@@ -53,7 +49,6 @@ export default class ProductList {
       return;
     }
 
-    // 🔍 Filtrar productos válidos
     const validProducts = products.filter(
       (p) =>
         p.Image &&
@@ -63,7 +58,6 @@ export default class ProductList {
         !p.Image.toLowerCase().includes("missing")
     );
 
-    // ✅ Usar la función de utils.mjs
     renderListWithTemplate(productCardTemplate, this.listElement, validProducts);
   }
 }

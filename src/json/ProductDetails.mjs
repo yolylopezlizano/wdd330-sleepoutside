@@ -1,6 +1,3 @@
-// ProductDetails.mjs
-// This module dynamically loads and displays a single product's details.
-
 import ProductData from "./ProductData.mjs";
 import { setLocalStorage, getLocalStorage } from "./utils.mjs";
 
@@ -34,7 +31,6 @@ function addProductToCart(product) {
     cartItems[existingIndex].quantity =
       (cartItems[existingIndex].quantity || 1) + 1;
   } else {
-    // If new, add quantity = 1
     product.quantity = 1;
     cartItems.push(product);
   }
