@@ -10,18 +10,17 @@ export default class ProductData {
   constructor(category) {
     this.category = category;
 
-    // Detecta el entorno y ajusta la ruta
+    // Detect environment and set correct base path
     let basePath;
-    const host = window.location.hostname;
 
-    if (host.includes("github.io")) {
-      // para GitHub Pages
+    if (window.location.hostname.includes("github.io")) {
+      // For GitHub Pages
       basePath = "/wdd330-sleepoutside/src/json/";
-    } else if (host.includes("netlify.app")) {
-      // para Netlify
-      basePath = "/src/json/";
+    } else if (window.location.hostname.includes("netlify.app")) {
+      // ✅ For Netlify builds
+      basePath = "/json/";
     } else {
-      // para entorno local (vite)
+      // Local development
       basePath = "../json/";
     }
 
@@ -40,6 +39,7 @@ export default class ProductData {
     return products.find((item) => item.Id === id);
   }
 }
+
 
 
 
