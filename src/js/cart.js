@@ -5,7 +5,7 @@ function normalizeCart(raw) {
   const combined = [];
   (raw || []).forEach((item) => {
     if (!item) return;
-    const idx = combined.findIndex((p) => p.Id === item.Id);
+    const idx = combined.findIndex((p) => p.Id == item.Id); // 🔹 usa == para evitar fallo tipo string/number
     const addQty = item.quantity ? Number(item.quantity) : 1;
     if (idx > -1) {
       combined[idx].quantity = (combined[idx].quantity || 1) + addQty;
@@ -35,33 +35,43 @@ function renderCartContents() {
     return;
   }
 
-  const htmlItems = cartItems
-    .filter((item) => item && item.Image) 
-    .map((item) => cartItemTemplate(item))
-    .join("");
-
-  listEl.innerHTML = htmlItems;
+  // 👉 sin filter, para que todos los items se muestren y todos tengan su X
+  listEl.innerHTML = cartItems.map(cartItemTemplate).join("");
 
   displayCartTotal(cartItems);
-  attachRemoveListeners(); // 
 }
 
 function cartItemTemplate(item) {
+  const imageSrc =
+    item.Image &&
+    typeof item.Image === "string" &&
+    item.Image.trim() !== "" &&
+    !item.Image.toLowerCase().includes("undefined") &&
+    !item.Image.toLowerCase().includes("missing")
+      ? item.Image.replace("../", "/")
+      : "/images/no-image.png";
+
   return `
     <li class="cart-card divider">
-      <a href="#" class="cart-card__image">
-        <img src="${item.Image}" alt="${item.Name}" />
+      <!-- 👇 ESTA LÍNEA CREA LA X -->
+      <button class="remove-btn" data-id="${item.Id}" title="Remove item">✕</button>
+
+      <a href="/product_pages/index.html?product=${item.Id}" class="cart-card__image">
+        <img 
+          src="${imageSrc}" 
+          alt="${item.Name}" 
+          onerror="this.src='/images/no-image.png'; this.onerror=null;"
+        >
       </a>
-      <a href="#">
-        <h2 class="card__name">${item.Name}</h2>
-      </a>
-      <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-      <p class="cart-card__quantity">qty: ${item.quantity || 1}</p>
+
+      <h2 class="card__name">${item.NameWithoutBrand}</h2>
+      <p class="cart-card__color">${item.Colors?.[0]?.ColorName || "N/A"}</p>
+      <p class="cart-card__quantity">Qty: ${item.quantity || 1}</p>
       <p class="cart-card__price">$${item.FinalPrice}</p>
-      <button class="remove-btn" data-id="${item.Id}">Remove</button>
     </li>
   `;
 }
+
 
 // --- total ---
 function clearCartTotal() {
@@ -89,15 +99,14 @@ function displayCartTotal(cartItems) {
   document.querySelector("main").appendChild(totalSection);
 
   document.getElementById("checkoutButton").addEventListener("click", () => {
-  window.location.href = "../checkout/index.html";
+    window.location.href = "../checkout/index.html";
   });
-
 }
 
 // --- remover ---
 function removeFromCart(productId) {
-  const cart = readCart();
-  const idx = cart.findIndex((p) => p.Id === productId);
+  let cart = readCart();
+  const idx = cart.findIndex((p) => p.Id == productId);
   if (idx === -1) return;
 
   const currentQty = cart[idx].quantity || 1;
@@ -108,19 +117,25 @@ function removeFromCart(productId) {
   }
 
   saveCart(cart);
-  renderCartContents(); 
+  renderCartContents();
 }
 
-function attachRemoveListeners() {
-  document.querySelectorAll(".remove-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const productId = e.currentTarget.dataset.id;
+
+function attachRemoveListenersOnce() {
+  const list = document.querySelector(".product-list");
+  if (!list) return;
+  // evita duplicados: elimina un listener previo si lo tenías (opcional si no lo usaste antes)
+  list.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-btn")) {
+      const productId = e.target.dataset.id;
       removeFromCart(productId);
-    });
-  });
+    }
+  }, { once: false });
 }
 
 function initCart() {
+  attachRemoveListenersOnce();   // 👈 solo una vez
   renderCartContents();
 }
 initCart();
+

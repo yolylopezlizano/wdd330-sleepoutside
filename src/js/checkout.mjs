@@ -20,7 +20,18 @@ function renderCheckout() {
     .map(
       (item) => `
       <li>
-        <img src="${item.Image}" alt="${item.Name}" width="80">
+        <img 
+          src="${
+            item.Image &&
+            !item.Image.includes("undefined") &&
+            !item.Image.includes("missing")
+              ? item.Image.replace("../", "/")
+              : "/images/no-image.png"
+          }" 
+          alt="${item.Name}" 
+          width="80"
+          onerror="this.src='/images/no-image.png'; this.onerror=null;"
+        >
         ${item.Name} — qty: ${item.quantity || 1} — $${item.FinalPrice}
       </li>`
     )
@@ -34,11 +45,12 @@ function renderCheckout() {
     </div>
   `;
 
+  // 🧹 Clear cart and redirect after placing order
   document.getElementById("placeOrder").addEventListener("click", () => {
-  localStorage.removeItem("so-cart");
-  window.location.href = "../thankyou/index.html";
+    localStorage.removeItem("so-cart");
+    window.location.href = "../thankyou/index.html";
   });
-
 }
 
 renderCheckout();
+

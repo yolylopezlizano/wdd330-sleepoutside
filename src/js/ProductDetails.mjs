@@ -10,11 +10,17 @@ export default class ProductDetails {
 
   async init() {
     try {
+      // 🧩 Buscar producto por ID
       this.product = await this.dataSource.findProductById(this.productId);
+
+      // Renderizar los detalles
       this.renderProductDetails();
-      document
-        .getElementById("addToCart")
-        .addEventListener("click", this.addToCart.bind(this));
+
+      // 🛒 Listener para añadir al carrito
+      const addToCartBtn = document.getElementById("addToCart");
+      if (addToCartBtn) {
+        addToCartBtn.addEventListener("click", this.addToCart.bind(this));
+      }
     } catch (err) {
       console.error("❌ Error al cargar detalles del producto:", err);
       document.querySelector(".product-detail").innerHTML =
@@ -31,14 +37,34 @@ export default class ProductDetails {
 
   renderProductDetails() {
     const container = document.querySelector(".product-detail");
+    if (!container) return;
 
+    // 🖼️ Imagen segura (usa no-image si no hay)
+    const imageSrc =
+      this.product.Image &&
+      typeof this.product.Image === "string" &&
+      this.product.Image.trim() !== "" &&
+      !this.product.Image.toLowerCase().includes("undefined") &&
+      !this.product.Image.toLowerCase().includes("missing")
+        ? this.product.Image.replace("../", "/")
+        : "/images/no-image.png";
+
+    // 🧱 Render del contenido del producto
     container.innerHTML = `
-      <h3>${this.product.Brand.Name}</h3>
-      <h2 class="divider">${this.product.NameWithoutBrand}</h2>
-      <img class="divider" src="${this.product.Image.replace("../", "/")}" alt="${this.product.Name}">
-      <p class="product-card__price">$${this.product.FinalPrice}</p>
-      <p class="product__color">${this.product.Colors[0].ColorName}</p>
-      <p class="product__description">${this.product.DescriptionHtmlSimple}</p>
+      <h3>${this.product.Brand?.Name || "Unknown Brand"}</h3>
+      <h2 class="divider">${this.product.NameWithoutBrand || "Unnamed Product"}</h2>
+
+      <img 
+        class="divider" 
+        src="${imageSrc}" 
+        alt="${this.product.Name || "Product Image"}"
+        onerror="this.src='/images/no-image.png'; this.onerror=null;"
+      >
+
+      <p class="product-card__price">$${this.product.FinalPrice || "0.00"}</p>
+      <p class="product__color">${this.product.Colors?.[0]?.ColorName || "N/A"}</p>
+      <p class="product__description">${this.product.DescriptionHtmlSimple || "No description available."}</p>
+
       <div class="product-detail__add">
         <button id="addToCart">Add to Cart</button>
       </div>
