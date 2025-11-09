@@ -20,16 +20,16 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "json/*", // 👈 copia todo lo de src/json
-          dest: "json",  // 👈 crea dist/json/
+          src: "json/*", 
+          dest: "json", 
         },
         {
-          src: "images/**/*", // 👈 copia todas las imágenes
-          dest: "images",     // 👈 crea dist/images/
+          src: "images/**/*",
+          dest: "images",     
         },
         {
-          src: "js/**/*",   // 👈 copia todos los archivos JS y MJS
-          dest: "js",       // 👈 los pone en dist/js/
+          src: "js/**/*",    
+          dest: "js",        
         },
       ],
     }),
