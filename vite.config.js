@@ -27,6 +27,10 @@ export default defineConfig({
           src: "images/**/*", // 👈 copia todas las imágenes
           dest: "images",     // 👈 crea dist/images/
         },
+        {
+          src: "js/**/*",   // 👈 copia todos los archivos JS y MJS
+          dest: "js",       // 👈 los pone en dist/js/
+        },
       ],
     }),
   ],
