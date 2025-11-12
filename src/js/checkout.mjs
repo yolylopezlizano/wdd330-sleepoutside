@@ -1,4 +1,5 @@
-import { getLocalStorage } from "./utils.mjs";
+import { loadHeaderFooter, getLocalStorage } from "./utils.mjs";
+loadHeaderFooter();
 
 function renderCheckout() {
   const cartItems = getLocalStorage("so-cart") || [];
@@ -48,7 +49,7 @@ function renderCheckout() {
   // 🧹 Clear cart and redirect after placing order
   document.getElementById("placeOrder").addEventListener("click", () => {
     localStorage.removeItem("so-cart");
-    window.location.href = "../thankyou/index.html";
+    window.location.href = "../Thankyou/index.html";
   });
 }
 
