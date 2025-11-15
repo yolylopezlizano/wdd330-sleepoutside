@@ -1,73 +1,59 @@
-import { loadHeaderFooter, setLocalStorage, getLocalStorage } from "./utils.mjs";
-loadHeaderFooter();
+import { saveToCart } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
     this.productId = productId;
-    this.product = {};
     this.dataSource = dataSource;
+    this.element = document.querySelector(".product-detail");
   }
 
   async init() {
-    try {
-      // 🧩 Buscar producto por ID
-      this.product = await this.dataSource.findProductById(this.productId);
+    const product = await this.dataSource.findProductById(this.productId);
 
-      // Renderizar los detalles
-      this.renderProductDetails();
+    console.log("📦 FULL PRODUCT RECEIVED:", product);
 
-      // 🛒 Listener para añadir al carrito
-      const addToCartBtn = document.getElementById("addToCart");
-      if (addToCartBtn) {
-        addToCartBtn.addEventListener("click", this.addToCart.bind(this));
-      }
-    } catch (err) {
-      console.error("❌ Error al cargar detalles del producto:", err);
-      document.querySelector(".product-detail").innerHTML =
-        "<p>Sorry, there was a problem loading this product.</p>";
+    this.renderProductDetails(product);
+
+    document.querySelector(".add-to-cart").addEventListener("click", () => {
+      saveToCart(product);
+      alert("Product added to cart!");
+    });
+  }
+
+  renderProductDetails(product) {
+    if (!product) {
+      this.element.innerHTML = "<p>Error loading product details.</p>";
+      return;
     }
-  }
 
-  addToCart() {
-    const cart = getLocalStorage("so-cart") || [];
-    cart.push(this.product);
-    setLocalStorage("so-cart", cart);
-    alert(`${this.product.Name} added to cart!`);
-  }
-
-  renderProductDetails() {
-    const container = document.querySelector(".product-detail");
-    if (!container) return;
-
-    // 🖼️ Imagen segura (usa no-image si no hay)
     const imageSrc =
-      this.product.Image &&
-      typeof this.product.Image === "string" &&
-      this.product.Image.trim() !== "" &&
-      !this.product.Image.toLowerCase().includes("undefined") &&
-      !this.product.Image.toLowerCase().includes("missing")
-        ? this.product.Image.replace("../", "/")
-        : "/images/no-image.png";
+      product.Images?.PrimaryLarge ||
+      product.Images?.PrimaryMedium ||
+      product.Images?.PrimarySmall ||
+      "/images/no-image.png";
 
-    // 🧱 Render del contenido del producto
-    container.innerHTML = `
-      <h3>${this.product.Brand?.Name || "Unknown Brand"}</h3>
-      <h2 class="divider">${this.product.NameWithoutBrand || "Unnamed Product"}</h2>
+    this.element.innerHTML = `
+      <div class="product-detail-card">
+        <h2>${product.Brand?.Name ?? "Unknown Brand"}</h2>
+        <h1>${product.Name}</h1>
 
-      <img 
-        class="divider" 
-        src="${imageSrc}" 
-        alt="${this.product.Name || "Product Image"}"
-        onerror="this.src='/images/no-image.png'; this.onerror=null;"
-      >
+        <img src="${imageSrc}" alt="${product.Name}" class="detail-image">
 
-      <p class="product-card__price">$${this.product.FinalPrice || "0.00"}</p>
-      <p class="product__color">${this.product.Colors?.[0]?.ColorName || "N/A"}</p>
-      <p class="product__description">${this.product.DescriptionHtmlSimple || "No description available."}</p>
+        <p class="price">$${product.FinalPrice}</p>
 
-      <div class="product-detail__add">
-        <button id="addToCart">Add to Cart</button>
+        <div class="description">
+          ${product.DescriptionHtmlSimple}
+        </div>
+
+        <button class="add-to-cart">Add to Cart</button>
       </div>
     `;
   }
 }
+
+
+
+
+
+
+

@@ -1,4 +1,6 @@
 import { loadHeaderFooter, getLocalStorage } from "./utils.mjs";
+import { checkoutItemTemplate } from "./checkoutTemplates.mjs";
+
 loadHeaderFooter();
 
 function renderCheckout() {
@@ -10,43 +12,31 @@ function renderCheckout() {
     return;
   }
 
+  // Crear lista UL donde se insertarán los productos
+  const ul = document.createElement("ul");
+  ul.classList.add("product-list"); // usa el MISMO estilo del cart
+  main.appendChild(ul);
+
+  // Renderizar productos
+  ul.innerHTML = cartItems.map(checkoutItemTemplate).join("");
+
+  // Calcular total
   const total = cartItems.reduce(
-    (sum, item) => sum + item.FinalPrice * (item.quantity || 1),
+    (sum, item) => sum + item.FinalPrice * item.quantity,
     0
   );
 
   const formattedTotal = total.toFixed(2);
 
-  const list = cartItems
-    .map(
-      (item) => `
-      <li>
-        <img 
-          src="${
-            item.Image &&
-            !item.Image.includes("undefined") &&
-            !item.Image.includes("missing")
-              ? item.Image.replace("../", "/")
-              : "/images/no-image.png"
-          }" 
-          alt="${item.Name}" 
-          width="80"
-          onerror="this.src='/images/no-image.png'; this.onerror=null;"
-        >
-        ${item.Name} — qty: ${item.quantity || 1} — $${item.FinalPrice}
-      </li>`
-    )
-    .join("");
-
+  // Mostrar total + botón
   main.innerHTML += `
-    <ul>${list}</ul>
     <div class="cart-total">
       <h3>Total: $${formattedTotal}</h3>
       <button id="placeOrder" class="checkout-btn">Place Order</button>
     </div>
   `;
 
-  // 🧹 Clear cart and redirect after placing order
+  // Acción del botón
   document.getElementById("placeOrder").addEventListener("click", () => {
     localStorage.removeItem("so-cart");
     window.location.href = "../Thankyou/index.html";

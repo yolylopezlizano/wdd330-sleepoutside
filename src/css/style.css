@@ -273,10 +273,8 @@ button {
   transform: scale(1.15);
 }
 
-/* note: removed duplicate .remove-btn with green background */
-
 /* ---------- PRODUCT LIST (CART PAGE ONLY) ---------- */
-.product-list {
+body.cart-page .product-list {
   display: block !important;
   flex-direction: column !important;
   grid-template-columns: none !important;
@@ -284,6 +282,17 @@ button {
   margin: 0;
   list-style: none;
 }
+
+/* ---------- PRODUCT LIST (CHECKOUT PAGE ONLY) ---------- */
+body.checkout-page .product-list {
+  display: block !important;
+  grid-template-columns: none !important;
+  flex-direction: column !important;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
 /* ---------- CART TOTAL ---------- */
 .cart-total {
   display: flex;
@@ -365,13 +374,13 @@ body.home-page .product-card img {
 /* 🔹 Center and resize "no-image.png" ONLY on home and product pages */
 body.home-page .product-card img[src*="no-image.png"],
 body.product-page .product-detail img[src*="no-image.png"] {
-  width: 150px;             /* tamaño más pequeño */
+  width: 150px;             
   height: 200px;
   object-fit: contain;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: auto;            /* centra horizontalmente */
+  margin: auto;            
   opacity: 0.9;
 }
 
@@ -381,7 +390,7 @@ body.product-page .product-detail {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;   /* mantiene los textos debajo */
+  flex-direction: column;  
   text-align: center;
 }
 
@@ -419,4 +428,45 @@ body.product-page .product-detail {
 .category-item p {
   font-size: 1.8rem;
   font-weight: bold;
+}
+
+/* PRODUCT LIST GRID */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto; 
+  list-style: none;
+}
+
+/* PRODUCT CARD */
+.product-card {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.03);
+}
+
+.product-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.product-card h3 {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.product-card p {
+  font-weight: bold;
+  color: #444;
 }

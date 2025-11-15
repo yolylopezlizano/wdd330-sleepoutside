@@ -8,18 +8,13 @@ export default class ProductList {
   }
 
   async init() {
-    const products = await this.dataSource.getData();
+    console.log("📦 ProductList.init category:", this.category);
 
-    // Filtrar solo productos con imágenes válidas
-    const validProducts = products.filter(
-      (product) =>
-        product.Image &&
-        product.Image.trim() !== "" &&
-        !product.Image.includes("undefined") &&
-        !product.Image.includes("missing")
-    );
+    const list = await this.dataSource.getData(this.category);
 
-    this.renderList(validProducts);
+    console.log("📦 Products from API:", list);
+
+    this.renderList(list);
   }
 
   renderList(products) {
@@ -30,17 +25,24 @@ export default class ProductList {
 
     const html = products
       .map((product) => {
-        const imageSrc = product.Image
-          ? product.Image.replace("../", "/")
-          : "/images/no-image.png";
+
+        // ⭐ Usar imágenes del API tal como vienen
+        const imageSrc =
+          product.Images?.PrimaryLarge ||
+          product.Images?.PrimaryMedium ||
+          product.Images?.PrimarySmall ||
+          "/images/no-image.png";
 
         return `
         <li class="product-card">
-          <a href="/product_pages/index.html?product=${product.Id}">
+
+          <!-- ⭐ MUY IMPORTANTE: ruta RELATIVA correcta -->
+          <a href="../product_pages/index.html?product=${product.Id}">
             <img src="${imageSrc}" alt="${product.Name}" />
             <h3>${product.Name}</h3>
             <p>$${product.FinalPrice}</p>
           </a>
+
         </li>`;
       })
       .join("");
@@ -48,5 +50,3 @@ export default class ProductList {
     this.listElement.innerHTML = html;
   }
 }
-
-

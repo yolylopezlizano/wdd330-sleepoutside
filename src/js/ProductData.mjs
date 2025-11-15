@@ -1,41 +1,22 @@
-function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
-  }
-}
+import { convertToJson } from "./utils.mjs";
 
 export default class ProductData {
-  constructor(category) {
-    this.category = category;
-    let basePath;
-
-    if (window.location.hostname.includes("github.io")) {
-      basePath = "/wdd330-sleepoutside/json/";
-    } else if (window.location.hostname.includes("netlify.app")) {
-      basePath = "/json/";
-    } else {
-      basePath = "../json/";
-    }
-
-    this.path = `${basePath}${this.category}.json`;
-    console.log("📦 ProductData loading from:", this.path);
+  constructor() {
+    this.baseURL = import.meta.env.VITE_SERVER_URL;
+    console.log("🔍 VITE_SERVER_URL:", this.baseURL);
   }
 
-  getData() {
-    return fetch(this.path).then(convertToJson).then((data) => data);
+  async getData(category) {
+    const response = await fetch(`${this.baseURL}products/search/${category}`);
+    const data = await convertToJson(response);
+    return data.Result;
   }
 
   async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
+    const response = await fetch(`${this.baseURL}product/${id}`);
+    const data = await convertToJson(response);
+    console.log("🔍 API returned (raw):", data);
+    return data.Result; // ⭐ IMPORTANT: we return ONLY the product object
   }
 }
-
-
-
-
-
-
 

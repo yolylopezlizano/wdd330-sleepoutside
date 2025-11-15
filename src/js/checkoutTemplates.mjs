@@ -1,4 +1,5 @@
-export function cartItemTemplate(item) {
+// checkoutTemplates.mjs
+export function checkoutItemTemplate(item) {
   const imageSrc =
     item.Images?.PrimarySmall ||
     item.Images?.PrimaryMedium ||
@@ -7,15 +8,12 @@ export function cartItemTemplate(item) {
 
   return `
     <li class="cart-card divider">
-      <button class="remove-btn" data-id="${item.Id}">✖</button>
 
-      <a href="/product_pages/index.html?product=${item.Id}" class="cart-card__image">
+      <div class="cart-card__image">
         <img src="${imageSrc}" alt="${item.Name}" />
-      </a>
+      </div>
 
-      <a href="/product_pages/index.html?product=${item.Id}">
-        <h2 class="card__name">${item.Name}</h2>
-      </a>
+      <h2 class="card__name">${item.Name}</h2>
 
       <p class="cart-card__color">${item.Colors?.[0]?.ColorName || "N/A"}</p>
       <p class="cart-card__quantity">Qty: ${item.quantity}</p>
@@ -23,4 +21,3 @@ export function cartItemTemplate(item) {
     </li>
   `;
 }
-

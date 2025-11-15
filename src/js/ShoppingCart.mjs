@@ -4,6 +4,7 @@ import {
   renderListWithTemplate,
   loadHeaderFooter,
 } from "./utils.mjs";
+
 import { cartItemTemplate } from "./cartTemplates.mjs";
 
 export default class ShoppingCart {
@@ -15,57 +16,67 @@ export default class ShoppingCart {
 
   async init() {
     await loadHeaderFooter();
-    const rawCart = getLocalStorage(this.key) || [];
-    // 🧩 Combine duplicate items once on init
-    this.cartItems = this.normalizeCart(rawCart);
-    setLocalStorage(this.key, this.cartItems); // ✅ Save normalized version
-    this.renderCart();
+
+    // Leer carrito desde localStorage
+    const stored = getLocalStorage(this.key) || [];
+
+    // Combinar y sumar cantidades
+    this.cartItems = this.normalize(stored);
+
+    // Guardar carrito ya normalizado
+    setLocalStorage(this.key, this.cartItems);
+
+    // Renderizar carrito
+    this.render();
   }
 
-  normalizeCart(rawCart) {
+  // ⭐ Combina duplicados y suma cantidades sin perder nada
+  normalize(items) {
     const combined = [];
-    rawCart.forEach((item) => {
+
+    items.forEach((item) => {
       if (!item) return;
-      const idx = combined.findIndex((p) => p.Id === item.Id);
-      if (idx > -1) {
-        combined[idx].quantity = (combined[idx].quantity || 1) + 1;
+
+      const found = combined.find((p) => p.Id === item.Id);
+
+      if (found) {
+        found.quantity += item.quantity || 1;  // ⭐ Aquí suma correctamente
       } else {
-        combined.push({ ...item, quantity: item.quantity || 1 });
+        combined.push({
+          ...item,
+          quantity: item.quantity || 1,  // ⭐ Si no tiene quantity, le pone 1
+        });
       }
     });
+
     return combined;
   }
 
-  renderCart() {
-  if (!this.listElement) return;
+  render() {
+    if (!this.listElement) return;
 
-  // 🧹 Always refresh items directly from storage (no re-normalization)
-  this.cartItems = getLocalStorage(this.key) || [];
+    this.listElement.innerHTML = "";
 
-  // 🧽 Clear the list before rendering new content
-  this.listElement.innerHTML = "";
+    if (this.cartItems.length === 0) {
+      this.listElement.innerHTML = "<p>Your cart is empty.</p>";
+      this.removeTotalSection();
+      return;
+    }
 
-  if (this.cartItems.length === 0) {
-    this.listElement.innerHTML = "<p>Your cart is empty.</p>";
-    const totalContainer = document.querySelector(".cart-total");
-    if (totalContainer) totalContainer.remove();
-    return;
+    renderListWithTemplate(
+      cartItemTemplate,
+      this.listElement,
+      this.cartItems,
+      "beforeend"
+    );
+
+    this.renderTotal();
+    this.enableRemoveButtons();
   }
-
-  renderListWithTemplate(cartItemTemplate, this.listElement, this.cartItems, "beforeend", false);
-  this.renderTotal();
-
-  // 🧩 Add event listeners to remove buttons (after rendering)
-  this.listElement.querySelectorAll(".remove-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const productId = e.currentTarget.dataset.id;
-      this.removeItem(productId);
-    });
-  });
-}
 
   renderTotal() {
     let totalContainer = document.querySelector(".cart-total");
+
     if (!totalContainer) {
       totalContainer = document.createElement("div");
       totalContainer.classList.add("cart-total");
@@ -73,7 +84,7 @@ export default class ShoppingCart {
     }
 
     const total = this.cartItems.reduce(
-      (sum, item) => sum + item.FinalPrice * (item.quantity || 1),
+      (sum, item) => sum + item.FinalPrice * item.quantity,
       0
     );
 
@@ -88,21 +99,34 @@ export default class ShoppingCart {
     });
   }
 
+  removeTotalSection() {
+    const totalContainer = document.querySelector(".cart-total");
+    if (totalContainer) totalContainer.remove();
+  }
+
+  enableRemoveButtons() {
+    this.listElement.querySelectorAll(".remove-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        this.removeItem(id);
+      });
+    });
+  }
+
   removeItem(productId) {
-    const index = this.cartItems.findIndex((item) => item.Id === productId);
-    if (index > -1) {
-      if (this.cartItems[index].quantity > 1) {
-        this.cartItems[index].quantity--;
-      } else {
-        this.cartItems.splice(index, 1);
-      }
+    const index = this.cartItems.findIndex(
+      (item) => item.Id.toLowerCase() === productId.toLowerCase()
+    );
+
+    if (index === -1) return;
+
+    if (this.cartItems[index].quantity > 1) {
+      this.cartItems[index].quantity -= 1; // 🔥 RESTA SOLO 1
+    } else {
+      this.cartItems.splice(index, 1); // ❌ Remove product
     }
 
-    // ✅ Save updated version back to localStorage
     setLocalStorage(this.key, this.cartItems);
-
-    // ♻️ Re-render cart with updated data
-    this.renderCart();
+    this.render();
   }
 }
-

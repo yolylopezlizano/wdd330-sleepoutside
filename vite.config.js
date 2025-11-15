@@ -28,10 +28,7 @@ export default defineConfig({
           src: "images/**/*",
           dest: "images",     
         },
-        {
-          src: "js/**/*",    
-          dest: "js",        
-        },
+        
         {
           src: "partials/**/*",
           dest: "partials",
