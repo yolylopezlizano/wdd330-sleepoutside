@@ -1,9 +1,9 @@
-// ======= SELECTORS =======
+//SELECTORS
 export function qs(selector, parent = document) {
   return parent.querySelector(selector);
 }
 
-// ======= LOCAL STORAGE =======
+//LOCAL STORAGE
 export function getLocalStorage(key) {
   return JSON.parse(localStorage.getItem(key));
 }
@@ -12,7 +12,7 @@ export function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-// ======= CLICKS =======
+//CLICKS
 export function setClick(selector, callback) {
   const element = qs(selector);
   if (!element) return;
@@ -24,14 +24,14 @@ export function setClick(selector, callback) {
   element.addEventListener("click", callback);
 }
 
-// ======= URL PARAM =======
+//URL PARAM
 export function getParam(param) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get(param);
 }
 
-// ======= TEMPLATE RENDERING =======
+//TEMPLATE RENDERING
 export function renderListWithTemplate(
   templateFn,
   parentElement,
@@ -54,7 +54,7 @@ export function renderWithTemplate(template, parentElement, data, callback) {
   if (callback) callback(data);
 }
 
-// ======= JSON CONVERTER =======
+//JSON CONVERTER
 export function convertToJson(res) {
   if (res.ok) {
     return res.json();
@@ -63,13 +63,13 @@ export function convertToJson(res) {
   }
 }
 
-// ======= CART ITEM COUNT =======
+//CART ITEM COUNT
 export function getCartItemCount() {
   const cart = getLocalStorage("so-cart") || [];
   return cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
 }
 
-// ======= UPDATE CART COUNTER IN HEADER =======
+//UPDATE CART COUNTER IN HEADER
 export function updateCartCount() {
   const countElement = document.getElementById("cart-count");
   if (countElement) {
@@ -77,7 +77,7 @@ export function updateCartCount() {
   }
 }
 
-// ======= SAVE TO CART =======
+//SAVE TO CART 
 export function saveToCart(product) {
   let cart = getLocalStorage("so-cart") || [];
 
@@ -96,7 +96,7 @@ export function saveToCart(product) {
   setLocalStorage("so-cart", cart);
 }
 
-// ======= LOAD PARTIALS (WITH CART COUNTER UPDATE) =======
+// LOAD PARTIALS (WITH CART COUNTER UPDATE)
 export async function loadTemplate(path) {
   try {
     const response = await fetch(path);
