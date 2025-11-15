@@ -1,4 +1,7 @@
 import ShoppingCart from "./ShoppingCart.mjs";
+import { loadHeaderFooter } from "../js/utils.mjs";
+
+loadHeaderFooter();
 
 const listElement = document.querySelector(".product-list");
 

@@ -1,4 +1,4 @@
-import { saveToCart } from "./utils.mjs";
+import { saveToCart, updateCartCount } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -16,8 +16,10 @@ export default class ProductDetails {
 
     document.querySelector(".add-to-cart").addEventListener("click", () => {
       saveToCart(product);
-      alert("Product added to cart!");
-    });
+      updateCartCount();
+      document.getElementById("cart-count").textContent = getCartItemCount();
+      alert("Product added in the cart!");
+      });
   }
 
   renderProductDetails(product) {

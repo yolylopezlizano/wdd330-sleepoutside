@@ -54,7 +54,49 @@ export function renderWithTemplate(template, parentElement, data, callback) {
   if (callback) callback(data);
 }
 
-// ======= LOAD PARTIALS =======
+// ======= JSON CONVERTER =======
+export function convertToJson(res) {
+  if (res.ok) {
+    return res.json();
+  } else {
+    throw new Error("Bad Response");
+  }
+}
+
+// ======= CART ITEM COUNT =======
+export function getCartItemCount() {
+  const cart = getLocalStorage("so-cart") || [];
+  return cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+}
+
+// ======= UPDATE CART COUNTER IN HEADER =======
+export function updateCartCount() {
+  const countElement = document.getElementById("cart-count");
+  if (countElement) {
+    countElement.textContent = getCartItemCount();
+  }
+}
+
+// ======= SAVE TO CART =======
+export function saveToCart(product) {
+  let cart = getLocalStorage("so-cart") || [];
+
+  // ⭐ Clon profundo para evitar referencias
+  const item = JSON.parse(JSON.stringify(product));
+
+  const existing = cart.find((p) => p.Id === item.Id);
+
+  if (existing) {
+    existing.quantity = (existing.quantity || 1) + 1;
+  } else {
+    item.quantity = 1;
+    cart.push(item);
+  }
+
+  setLocalStorage("so-cart", cart);
+}
+
+// ======= LOAD PARTIALS (WITH CART COUNTER UPDATE) =======
 export async function loadTemplate(path) {
   try {
     const response = await fetch(path);
@@ -74,43 +116,25 @@ export async function loadHeaderFooter() {
     const headerElement = document.getElementById("main-header");
     const footerElement = document.getElementById("main-footer");
 
-    if (headerElement) renderWithTemplate(headerHTML, headerElement);
-    if (footerElement) renderWithTemplate(footerHTML, footerElement);
+    if (headerElement) {
+      renderWithTemplate(headerHTML, headerElement);
 
-    console.log("✅ Header and footer loaded from: /partials/");
+      // ⭐ Update cart counter
+      const countElement = document.getElementById("cart-count");
+      if (countElement) {
+        countElement.textContent = getCartItemCount();
+      }
+    }
+
+    if (footerElement) {
+      renderWithTemplate(footerHTML, footerElement);
+    }
+
+    console.log("✅ Header and footer loaded");
+
   } catch (err) {
     console.error("❌ Error loading header/footer:", err);
   }
-}
-
-// ======= JSON CONVERTER =======
-export function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
-  }
-}
-
-// ======= SAVE TO CART (CORREGIDO) =======
-export function saveToCart(product) {
-  let cart = getLocalStorage("so-cart") || [];
-
-  // ⭐ Clon profundo para evitar que se cambie el mismo objeto
-  const item = JSON.parse(JSON.stringify(product));
-
-  const existing = cart.find((p) => p.Id === item.Id);
-
-  if (existing) {
-    // ⭐ Si ya existe -> aumentar cantidad
-    existing.quantity = (existing.quantity || 1) + 1;
-  } else {
-    // ⭐ Si no existe -> agregar con cantidad inicial
-    item.quantity = 1;
-    cart.push(item);
-  }
-
-  setLocalStorage("so-cart", cart);
 }
 
 
