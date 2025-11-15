@@ -1,30 +1,4 @@
-import { renderListWithTemplate } from "./utils.mjs";
-
-function productCardTemplate(product) {
-  const imageSrc =
-    product.Image &&
-    typeof product.Image === "string" &&
-    product.Image.trim() !== "" &&
-    !product.Image.toLowerCase().includes("undefined") &&
-    !product.Image.toLowerCase().includes("missing")
-      ? product.Image.replace("../", "/")
-      : "../images/no-image.png";
-
-  return `
-    <li class="product-card">
-      <a href="/product_pages/index.html?product=${product.Id}">
-        <img 
-          src="${imageSrc}" 
-          alt="${product.Name}" 
-          onerror="this.src='/images/no-image.png'; this.onerror=null;" 
-        />
-        <h2 class="card__brand">${product.Brand.Name}</h2>
-        <h3 class="card__name">${product.NameWithoutBrand}</h3>
-        <p class="product-card__price">$${product.FinalPrice}</p>
-      </a>
-    </li>
-  `;
-}
+// ProductList.mjs
 
 export default class ProductList {
   constructor(category, dataSource, listElement) {
@@ -34,31 +8,44 @@ export default class ProductList {
   }
 
   async init() {
-    try {
-      const products = await this.dataSource.getData();
-      this.renderList(products);
-    } catch (err) {
-      console.error("❌ Error loading product list:", err);
-      this.listElement.innerHTML = "<p>Failed to load products.</p>";
-    }
+    const products = await this.dataSource.getData();
+
+    // Filtrar solo productos con imágenes válidas
+    const validProducts = products.filter(
+      (product) =>
+        product.Image &&
+        product.Image.trim() !== "" &&
+        !product.Image.includes("undefined") &&
+        !product.Image.includes("missing")
+    );
+
+    this.renderList(validProducts);
   }
 
   renderList(products) {
-    if (!products || products.length === 0) {
-      this.listElement.innerHTML = "<p>No products found.</p>";
+    if (!this.listElement) {
+      console.error("❌ No se encontró .product-list en el HTML");
       return;
     }
 
-    const validProducts = products.filter(
-      (p) =>
-        p.Image &&
-        typeof p.Image === "string" &&
-        p.Image.trim() !== "" &&
-        !p.Image.toLowerCase().includes("undefined") &&
-        !p.Image.toLowerCase().includes("missing")
-    );
+    const html = products
+      .map((product) => {
+        const imageSrc = product.Image
+          ? product.Image.replace("../", "/")
+          : "/images/no-image.png";
 
-    renderListWithTemplate(productCardTemplate, this.listElement, validProducts);
+        return `
+        <li class="product-card">
+          <a href="/product_pages/index.html?product=${product.Id}">
+            <img src="${imageSrc}" alt="${product.Name}" />
+            <h3>${product.Name}</h3>
+            <p>$${product.FinalPrice}</p>
+          </a>
+        </li>`;
+      })
+      .join("");
+
+    this.listElement.innerHTML = html;
   }
 }
 
