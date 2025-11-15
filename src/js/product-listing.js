@@ -1,6 +1,6 @@
 // product-listing.js
 import ProductData from "./ProductData.mjs";
-import ProductList from "../ProductList.mjs";
+import ProductList from "./ProductList.mjs";
 
 console.log("📄 product-listing.js cargado");
 
