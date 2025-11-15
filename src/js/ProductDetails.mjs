@@ -10,7 +10,7 @@ export default class ProductDetails {
   async init() {
     const product = await this.dataSource.findProductById(this.productId);
 
-    console.log("📦 FULL PRODUCT RECEIVED:", product);
+    console.log("📦 PRODUCTO RECIBIDO:", product);
 
     this.renderProductDetails(product);
 
@@ -21,11 +21,6 @@ export default class ProductDetails {
   }
 
   renderProductDetails(product) {
-    if (!product) {
-      this.element.innerHTML = "<p>Error loading product details.</p>";
-      return;
-    }
-
     const imageSrc =
       product.Images?.PrimaryLarge ||
       product.Images?.PrimaryMedium ||
@@ -50,6 +45,7 @@ export default class ProductDetails {
     `;
   }
 }
+
 
 
 

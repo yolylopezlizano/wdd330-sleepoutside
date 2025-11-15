@@ -1,19 +1,29 @@
-import { loadHeaderFooter } from "./utils.mjs";
 import ProductData from "./ProductData.mjs";
 import ProductList from "./ProductList.mjs";
-
-console.log("📄 product-listing.js cargado");
+import { loadHeaderFooter, getParam } from "./utils.mjs";
 
 loadHeaderFooter();
 
-const category = new URLSearchParams(window.location.search).get("category") || "tents";
+// Get category from URL
+const category = getParam("category");
 
-console.log("📌 Category from URL:", category);
+// 🏷️ Update page title
+const titleElement = document.querySelector(".product-list-title");
+if (titleElement && category) {
+  titleElement.textContent = `Top Products: ${category}`;
+}
 
+// Create ProductData instance
 const dataSource = new ProductData();
+
+// Get list element
 const listElement = document.querySelector(".product-list");
 
+// Create ProductList instance
 const productList = new ProductList(category, dataSource, listElement);
+
+// Load products
 productList.init();
+
 
 

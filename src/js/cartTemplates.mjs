@@ -9,11 +9,11 @@ export function cartItemTemplate(item) {
     <li class="cart-card divider">
       <button class="remove-btn" data-id="${item.Id}">✖</button>
 
-      <a href="/product_pages/index.html?product=${item.Id}" class="cart-card__image">
+      <a href="../product_pages/index.html?product=${item.Id}" class="cart-card__image">
         <img src="${imageSrc}" alt="${item.Name}" />
       </a>
 
-      <a href="/product_pages/index.html?product=${item.Id}">
+      <a href="../product_pages/index.html?product=${item.Id}">
         <h2 class="card__name">${item.Name}</h2>
       </a>
 
@@ -23,4 +23,5 @@ export function cartItemTemplate(item) {
     </li>
   `;
 }
+
 
