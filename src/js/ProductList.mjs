@@ -1,5 +1,3 @@
-// ProductList.mjs
-
 export default class ProductList {
   constructor(category, dataSource, listElement) {
     this.category = category;
@@ -10,7 +8,7 @@ export default class ProductList {
   async init() {
     console.log("📦 ProductList.init category:", this.category);
 
-    const list = await this.dataSource.getData(this.category);
+    const list = await this.dataSource.getProducts(this.category);
 
     console.log("📦 Products from API:", list);
 

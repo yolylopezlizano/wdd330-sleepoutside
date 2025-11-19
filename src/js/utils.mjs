@@ -63,6 +63,16 @@ export function convertToJson(res) {
   }
 }
 
+// ======= FORM DATA TO JSON =======
+export function formDataToJSON(formElement) {
+  const formData = new FormData(formElement);
+  const obj = {};
+  for (const [key, value] of formData.entries()) {
+    obj[key] = value;
+  }
+  return obj;
+}
+
 //CART ITEM COUNT
 export function getCartItemCount() {
   const cart = getLocalStorage("so-cart") || [];
@@ -137,6 +147,24 @@ export async function loadHeaderFooter() {
   }
 }
 
+export function showToast(message) {
+  let toast = document.createElement("div");
+  toast.className = "toast-message";
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  // Show
+  setTimeout(() => {
+    toast.classList.add("toast-show");
+  }, 10);
+
+  // Hide after 3s
+  setTimeout(() => {
+    toast.classList.remove("toast-show");
+    setTimeout(() => toast.remove(), 200);
+  }, 1500);
+}
 
 
 

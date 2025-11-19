@@ -9,17 +9,142 @@
   </head>
 
   <body class="checkout-page">
+    <!-- Dynamic header -->
+    <header id="main-header"></header>
 
-    <header class="divider" id="main-header"></header>
+    <main class="divider checkout-layout">
 
-    <main class="divider">
-      <section class="products">
-        <h2>Review & Place your Order</h2>
+      <!-- LEFT SECTION: CHECKOUT FORM -->
+      <section class="checkout-form-section">
+        <h2>Checkout</h2>
+
+        <p class="checkout-note">
+          Please fill out your customer information. Taxes and shipping totals
+          will appear after entering your ZIP code.
+        </p>
+
+        <!-- 👇 VERY IMPORTANT: THE FORM STARTS HERE AND WRAPS EVERYTHING -->
+        <form id="checkoutForm" novalidate>
+
+          <!-- Customer Info -->
+          <fieldset>
+            <legend>Customer Information</legend>
+
+            <label>
+              First Name
+              <input type="text" name="fname" id="fname" required />
+            </label>
+
+            <label>
+              Last Name
+              <input type="text" name="lname" id="lname" required />
+            </label>
+          </fieldset>
+
+          <!-- Address -->
+          <fieldset>
+            <legend>Address</legend>
+
+            <label>
+              Street Address
+              <input type="text" name="street" id="street" required />
+            </label>
+
+            <label>
+              City
+              <input type="text" name="city" id="city" required />
+            </label>
+
+            <label>
+              State
+              <input type="text" name="state" id="state" required />
+            </label>
+
+            <label>
+              Zip Code
+              <input type="text" name="zip" id="zip" required />
+            </label>
+          </fieldset>
       </section>
+
+      <!-- RIGHT SECTION: ORDER SUMMARY -->
+      <section class="checkout-summary order-summary">
+        <h2>Order Summary</h2>
+
+        <p id="item-count">0 items</p>
+
+        <ul id="checkout-items" class="product-list"></ul>
+
+        <div class="summary-totals">
+          <p>Subtotal: $<span id="subtotal">0.00</span></p>
+          <p>Tax (6%): $<span id="tax">0.00</span></p>
+          <p>Shipping: $<span id="shipping">0.00</span></p>
+          <hr />
+          <p>
+            <strong>Order Total: $<span id="orderTotal">0.00</span></strong>
+          </p>
+        </div>
+
+        <!-- PAYMENT SECTION UNDER ORDER TOTAL -->
+        <div class="payment-section">
+          <fieldset>
+            <legend>Payment</legend>
+
+            <label>
+              Credit Card Number
+              <input 
+                type="text" 
+                name="cardNumber" 
+                id="cardNumber" 
+                required 
+                minlength="16" 
+                maxlength="16" 
+              />
+            </label>
+
+            <div class="payment-row">
+              <label>
+                Expiration Date (MM/YYYY)
+                <input
+                  type="text"
+                  name="expiration"
+                  id="expiration"
+                  placeholder="MM/YYYY"
+                  pattern="(0[1-9]|1[0-2])\/[0-9]{4}"
+                  required
+                />
+              </label>
+
+              <label>
+                Security Code
+                <input 
+                  type="text" 
+                  name="code" 
+                  id="code" 
+                  required 
+                  minlength="3" 
+                  maxlength="4" 
+                />
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- FINAL SUBMIT BUTTON (INSIDE THE FORM!) -->
+          <button type="submit" class="checkout-btn">Place Order</button>
+        </div>
+
+      </section>
+
+      </form> <!-- 👈 FORM CLOSES HERE (correct location!) -->
+
     </main>
 
+    <!-- Dynamic footer -->
     <footer id="main-footer"></footer>
 
-    <script type="module" src="../js/checkout.mjs"></script>
+    <script type="module" src="../js/checkout.js"></script>
   </body>
 </html>
+
+
+

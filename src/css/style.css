@@ -486,3 +486,144 @@ body.product-page .product-detail {
   align-items: center;
   border-radius: 50%;
 }
+.checkout-note {
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 1rem;
+  background: #fff7d6;
+  padding: 8px 12px;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+}
+.payment-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--light-grey);
+}
+
+.payment-section fieldset {
+  margin-bottom: 1rem;
+}
+
+/* Space between form and order summary on small screens */
+.checkout-summary {
+  margin-top: 2rem;
+}
+
+/* SUCCESS MESSAGE POPUP */
+.toast-message {
+  position: fixed;
+  bottom: 20px; /* or top: 20px */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #c99446;
+  color: white;
+  padding: 14px 24px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 9999;
+}
+
+.toast-show {
+  opacity: 1;
+}
+
+/* ===== CHECKOUT FORM STYLING ===== */
+
+.checkout-form-section fieldset {
+  border: 1px solid var(--light-grey);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+}
+
+.checkout-form-section legend {
+  font-weight: bold;
+  padding: 0 0.5rem;
+}
+
+.checkout-form-section label {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.checkout-form-section input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Make the form a 2-column layout on bigger screens */
+@media (min-width: 600px) {
+  .checkout-form-section fieldset {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+  }
+  
+  .checkout-form-section label {
+    margin-bottom: 0.8rem;
+  }
+}
+
+/* ===== PAYMENT SECTION (Checkout right side) ===== */
+
+.payment-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--light-grey);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.payment-section fieldset {
+  border: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.payment-section legend {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.payment-section label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.payment-section input {
+  padding: 0.5rem;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.payment-section .checkout-btn {
+  margin-top: 1rem;
+  width: 100%;
+  text-align: center;
+}
+/* Put expiration + security code side by side */
+.payment-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.payment-row label {
+  flex: 1;
+}
+.payment-section {
+  margin-bottom: 3rem; /* agrega espacio antes del footer */
+}

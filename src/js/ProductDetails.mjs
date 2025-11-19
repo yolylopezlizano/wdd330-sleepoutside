@@ -1,4 +1,4 @@
-import { saveToCart, updateCartCount } from "./utils.mjs";
+import { saveToCart, updateCartCount, getCartItemCount, showToast } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -10,16 +10,20 @@ export default class ProductDetails {
   async init() {
     const product = await this.dataSource.findProductById(this.productId);
 
-    console.log("📦 PRODUCTO RECIBIDO:", product);
+    console.log("📦 PRODUCT RECEIVED:", product);
 
     this.renderProductDetails(product);
 
-    document.querySelector(".add-to-cart").addEventListener("click", () => {
-      saveToCart(product);
-      updateCartCount();
-      document.getElementById("cart-count").textContent = getCartItemCount();
-      alert("Product added in the cart!");
+    // Safe button selection
+    const addButton = this.element.querySelector(".add-to-cart");
+
+    if (addButton) {
+      addButton.addEventListener("click", () => {
+        saveToCart(product);
+        updateCartCount(); // updates counter automatically
+        showToast("Product added to the cart!");
       });
+    }
   }
 
   renderProductDetails(product) {
@@ -47,8 +51,6 @@ export default class ProductDetails {
     `;
   }
 }
-
-
 
 
 
