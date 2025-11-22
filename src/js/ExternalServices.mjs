@@ -36,21 +36,9 @@ export default class ExternalServices {
 
     const response = await fetch(url, options);
 
-      // If error (400), read body as JSON and extract message
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-
-      if (errorData) {
-        // The backend sends { "cardNumber": "Invalid Card Number" }
-        const firstKey = Object.keys(errorData)[0];
-        throw new Error(errorData[firstKey]);
-      }
-
-      throw new Error("Unknown checkout error");
-    }
-
-  return convertToJson(response);
+    // Always send through convertToJson
+    return convertToJson(response);
+  }
 }
 
 
-}

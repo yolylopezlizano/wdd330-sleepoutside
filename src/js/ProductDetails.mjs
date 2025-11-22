@@ -1,4 +1,4 @@
-import { saveToCart, updateCartCount, getCartItemCount, showToast } from "./utils.mjs";
+import { saveToCart, updateCartCount, getCartItemCount} from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -21,7 +21,6 @@ export default class ProductDetails {
       addButton.addEventListener("click", () => {
         saveToCart(product);
         updateCartCount(); // updates counter automatically
-        showToast("Product added to the cart!");
       });
     }
   }

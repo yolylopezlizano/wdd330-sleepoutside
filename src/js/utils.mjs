@@ -55,13 +55,27 @@ export function renderWithTemplate(template, parentElement, data, callback) {
 }
 
 //JSON CONVERTER
-export function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
+export async function convertToJson(res) {
+  // Always extract JSON body first
+  let jsonResponse;
+  try {
+    jsonResponse = await res.json();
+  } catch (e) {
+    jsonResponse = { message: "Invalid JSON response from server" };
   }
+
+  // If OK → return data
+  if (res.ok) {
+    return jsonResponse;
+  }
+
+  // If NOT OK → return detailed server error
+  throw {
+    name: "servicesError",
+    message: jsonResponse
+  };
 }
+
 
 // ======= FORM DATA TO JSON =======
 export function formDataToJSON(formElement) {
@@ -104,6 +118,24 @@ export function saveToCart(product) {
   }
 
   setLocalStorage("so-cart", cart);
+  alertMessage("Item added to cart!", false);
+  
+  animateCartIcon();
+
+}
+
+export function animateCartIcon() {
+  const cartIcon = document.querySelector(".cart");
+
+  if (!cartIcon) return;
+
+  // add class
+  cartIcon.classList.add("animate");
+
+  // remove after animation ends
+  setTimeout(() => {
+    cartIcon.classList.remove("animate");
+  }, 500);
 }
 
 // LOAD PARTIALS (WITH CART COUNTER UPDATE)
@@ -166,6 +198,57 @@ export function showToast(message) {
   }, 1500);
 }
 
+// ======= CUSTOM ALERT MESSAGE =======
 
+export function alertMessage(message, scroll = true) {
+  // create element
+  const alert = document.createElement("div");
+  alert.classList.add("alert-success-box");
+
+  // message + close button (X)
+  alert.innerHTML = `
+    <p>${message}</p>
+    <button class="alert-close">X</button>
+  `;
+
+  // remove alert when X is clicked
+  alert.addEventListener("click", (e) => {
+    if (e.target.classList.contains("alert-close")) {
+      alert.remove();
+    }
+  });
+
+  // insert alert at top of main
+  const main = document.querySelector("main");
+  if (main) {
+    main.prepend(alert);
+  }
+
+  // scroll to top if needed
+  if (scroll) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+export function alertSuccess(message, scroll = false) {
+  const alert = document.createElement("div");
+  alert.classList.add("alert-success");
+
+  alert.innerHTML = `
+    <p>${message}</p>
+    <button class="alert-close">X</button>
+  `;
+
+  alert.addEventListener("click", (e) => {
+    if (e.target.classList.contains("alert-close")) {
+      alert.remove();
+    }
+  });
+
+  const main = document.querySelector("main");
+  main.prepend(alert);
+
+  if (scroll) window.scrollTo(0, 0);
+}
 
 

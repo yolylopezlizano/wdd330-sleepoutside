@@ -1,14 +1,11 @@
-// checkout.js
 import { loadHeaderFooter, getLocalStorage } from "./utils.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
 import { checkoutItemTemplate } from "./checkoutTemplates.mjs";
 
 loadHeaderFooter();
 
-// 1) Load cart items from localStorage
+// Load cart items
 const cartItems = getLocalStorage("so-cart") || [];
-
-// 2) Render items in the summary list
 const itemsContainer = document.querySelector("#checkout-items");
 
 if (itemsContainer) {
@@ -20,11 +17,10 @@ if (itemsContainer) {
   }
 }
 
-// 3) Initialize CheckoutProcess to calculate subtotal and item count
 const checkout = new CheckoutProcess("so-cart", ".order-summary");
 checkout.init();
 
-// 4) When ZIP loses focus, calculate full totals (tax + shipping + total)
+// Recalculate totals when ZIP changes
 const zipInput = document.querySelector("#zip");
 if (zipInput) {
   zipInput.addEventListener("blur", () => {
@@ -32,12 +28,13 @@ if (zipInput) {
   });
 }
 
-// 5) Handle form submit: build order and send to server
 const form = document.getElementById("checkoutForm");
 
 if (form) {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    clearErrors();
 
     if (!form.checkValidity()) {
       form.reportValidity();
@@ -48,25 +45,50 @@ if (form) {
 
     try {
       const result = await checkout.checkout(form);
-      console.log("✅ Order submitted successfully:", result);
+      console.log("Order submitted successfully:", result);
 
       localStorage.removeItem("so-cart");
-      window.location.href = "../Thankyou/index.html";
+      window.location.href = "./success.html";
     } catch (err) {
-      console.error("❌ Order Error:", err);
+      console.error("Order Error:", err);
+      
+      clearErrors();
 
-      let message =
-        "There was a problem submitting your order. Please digit 1234123412341234 in your card information and try again.";
-
-      if (err.message && err.message.includes("Invalid Card Number")) {
-        message =
-          "Invalid card number. Please use 1234123412341234 and try again.";
+      if (err.name === "servicesError") {
+        showErrors(err.message);
+      } else {
+        alertMessage("There was a problem submitting your order. Please try again.");
       }
-
-      alert(message);
     }
   });
+}
 
+// -------------------------
+// ERROR UI HELPERS
+// -------------------------
+
+function clearErrors() {
+  const container = document.querySelector(".form-errors");
+  if (container) {
+    container.innerHTML = "";
+    container.classList.remove("active");
+  }
+}
+
+function showErrors(errorObj) {
+  const container = document.querySelector(".form-errors");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  for (const key in errorObj) {
+    const p = document.createElement("p");
+    p.textContent = errorObj[key];
+    p.classList.add("error-message");
+    container.appendChild(p);
+  }
+
+  container.classList.add("active");
 }
 
 

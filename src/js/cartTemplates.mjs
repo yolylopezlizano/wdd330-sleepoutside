@@ -5,6 +5,9 @@ export function cartItemTemplate(item) {
     item.Images?.PrimaryLarge ||
     "/images/no-image.png";
 
+  const qty = item.quantity || 1;  
+  const total = (item.FinalPrice * qty).toFixed(2);
+
   return `
     <li class="cart-card divider">
       <button class="remove-btn" data-id="${item.Id}">✖</button>
@@ -18,8 +21,8 @@ export function cartItemTemplate(item) {
       </a>
 
       <p class="cart-card__color">${item.Colors?.[0]?.ColorName || "N/A"}</p>
-      <p class="cart-card__quantity">Qty: ${item.quantity}</p>
-      <p class="cart-card__price">$${(item.FinalPrice * item.quantity).toFixed(2)}</p>
+      <p class="cart-card__quantity">Qty: ${qty}</p>
+      <p class="cart-card__price">$${total}</p>
     </li>
   `;
 }
