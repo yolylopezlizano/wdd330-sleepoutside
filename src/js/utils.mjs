@@ -77,7 +77,7 @@ export async function convertToJson(res) {
 }
 
 
-// ======= FORM DATA TO JSON =======
+//FORM DATA TO JSON 
 export function formDataToJSON(formElement) {
   const formData = new FormData(formElement);
   const obj = {};
@@ -124,6 +124,7 @@ export function saveToCart(product) {
 
 }
 
+// Animated Bag Icon 
 export function animateCartIcon() {
   const cartIcon = document.querySelector(".cart");
 
